@@ -30,7 +30,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get sales summary for the session before closing
-    const openedAt = cashRegister.lastOpenedAt || cashRegister.createdAt
+    const openedAtDate = cashRegister.lastOpenedAt || cashRegister.createdAt
+    const openedAt = new Date(openedAtDate) // Asegurar que es un objeto Date
     const now = getParaguayDate()
     
     const salesSummary = await prisma.sale.groupBy({
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
     const transferTotal = salesSummary.find(s => s.paymentMethod === 'TRANSFER')?._sum.total || 0
     const totalSales = Number(cashTotal) + Number(cardTotal) + Number(transferTotal)
 
-    // Calculate hours open
+    // Calculate hours open - usar getTime() para comparar timestamps directamente
     const hoursOpen = (now.getTime() - openedAt.getTime()) / (1000 * 60 * 60)
 
     // Close cash register

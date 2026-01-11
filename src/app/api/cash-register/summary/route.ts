@@ -82,10 +82,12 @@ export async function GET(request: NextRequest) {
     })
 
     // Calcular horas de apertura
+    // Asegurarse de que ambas fechas estén en la misma zona horaria
+    const now = getParaguayDate()
     const hoursOpen = cashRegister.isOpen && cashRegister.lastOpenedAt
-      ? (new Date().getTime() - cashRegister.lastOpenedAt.getTime()) / (1000 * 60 * 60)
+      ? (now.getTime() - new Date(cashRegister.lastOpenedAt).getTime()) / (1000 * 60 * 60)
       : cashRegister.lastOpenedAt && cashRegister.lastClosedAt
-      ? (cashRegister.lastClosedAt.getTime() - cashRegister.lastOpenedAt.getTime()) / (1000 * 60 * 60)
+      ? (new Date(cashRegister.lastClosedAt).getTime() - new Date(cashRegister.lastOpenedAt).getTime()) / (1000 * 60 * 60)
       : 0
 
     // Información de la jornada
