@@ -30,9 +30,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Get sales summary for the session before closing
-    const openedAtDate = cashRegister.lastOpenedAt || cashRegister.createdAt
-    const openedAt = new Date(openedAtDate) // Asegurar que es un objeto Date
-    const now = getParaguayDate()
+    // Usar new Date() para UTC - Prisma guarda fechas en UTC
+    const openedAt = cashRegister.lastOpenedAt || cashRegister.createdAt
+    const now = new Date()
     
     const salesSummary = await prisma.sale.groupBy({
       by: ['paymentMethod'],
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     const transferTotal = salesSummary.find(s => s.paymentMethod === 'TRANSFER')?._sum.total || 0
     const totalSales = Number(cashTotal) + Number(cardTotal) + Number(transferTotal)
 
-    // Calculate hours open - usar getTime() para comparar timestamps directamente
+    // Calculate hours open - usar getTime() para comparar timestamps UTC directamente
     const hoursOpen = (now.getTime() - openedAt.getTime()) / (1000 * 60 * 60)
 
     // Close cash register

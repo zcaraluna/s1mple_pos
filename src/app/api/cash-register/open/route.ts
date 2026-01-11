@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Open cash register
+    // Usar new Date() para UTC - Prisma guarda fechas en UTC
     const result = await prisma.$transaction(async (tx) => {
       const updatedCashRegister = await tx.cashRegister.update({
         where: { id: 'default-cash-register' },

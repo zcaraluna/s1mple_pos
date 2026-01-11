@@ -82,12 +82,12 @@ export async function GET(request: NextRequest) {
     })
 
     // Calcular horas de apertura
-    // Asegurarse de que ambas fechas estén en la misma zona horaria
-    const now = getParaguayDate()
+    // Usar new Date() para UTC - todas las fechas en Prisma están en UTC
+    const now = new Date()
     const hoursOpen = cashRegister.isOpen && cashRegister.lastOpenedAt
-      ? (now.getTime() - new Date(cashRegister.lastOpenedAt).getTime()) / (1000 * 60 * 60)
+      ? (now.getTime() - cashRegister.lastOpenedAt.getTime()) / (1000 * 60 * 60)
       : cashRegister.lastOpenedAt && cashRegister.lastClosedAt
-      ? (new Date(cashRegister.lastClosedAt).getTime() - new Date(cashRegister.lastOpenedAt).getTime()) / (1000 * 60 * 60)
+      ? (cashRegister.lastClosedAt.getTime() - cashRegister.lastOpenedAt.getTime()) / (1000 * 60 * 60)
       : 0
 
     // Información de la jornada
