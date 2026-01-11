@@ -33,15 +33,15 @@ export default function LoginPage() {
     try {
       const success = await login(username, password)
       if (success) {
-        // Use window.location.href to force a full page reload
-        // This ensures the cookie is available for the middleware
+        // Wait a bit to ensure cookie is set, then redirect
+        await new Promise(resolve => setTimeout(resolve, 100))
         window.location.href = '/'
       } else {
         setError('Credenciales inválidas')
+        setLoading(false)
       }
     } catch (error) {
       setError('Error al iniciar sesión')
-    } finally {
       setLoading(false)
     }
   }
