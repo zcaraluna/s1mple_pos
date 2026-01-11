@@ -61,11 +61,7 @@ async function main() {
   ])
 
   // Create sample ingredients
-  const existingIngredients = await prisma.ingredient.findMany()
-  let ingredients = existingIngredients
-  
-  if (existingIngredients.length === 0) {
-    ingredients = await Promise.all([
+  const ingredients = await Promise.all([
     prisma.ingredient.create({
       data: {
         name: 'Masa para Pizza',
