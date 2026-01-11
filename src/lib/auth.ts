@@ -93,14 +93,15 @@ export async function getSession(): Promise<AuthUser | null> {
 
 // Helper function for middleware (Next.js 15+ requires request.cookies)
 export async function getSessionFromRequest(request: { cookies: { get: (name: string) => { value: string } | undefined } }): Promise<AuthUser | null> {
-  const sessionCookie = request.cookies.get('session')
-  const session = sessionCookie?.value
-  if (!session) return null
-
   try {
+    const sessionCookie = request.cookies.get('session')
+    const session = sessionCookie?.value
+    if (!session) return null
+
     const payload = await decrypt(session)
     return payload.user as AuthUser
   } catch (error) {
+    console.error('Error reading session from request:', error)
     return null
   }
 }
