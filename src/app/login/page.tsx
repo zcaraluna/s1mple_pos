@@ -33,7 +33,9 @@ export default function LoginPage() {
     try {
       const success = await login(username, password)
       if (success) {
-        router.push('/')
+        // Use window.location.href to force a full page reload
+        // This ensures the cookie is available for the middleware
+        window.location.href = '/'
       } else {
         setError('Credenciales inválidas')
       }
