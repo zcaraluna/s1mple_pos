@@ -108,39 +108,29 @@ export default function Dashboard() {
         <Grid container spacing={3}>
           {/* Total Sales Today */}
           <Grid item xs={12} sm={6} md={3}>
-            <Card 
-              sx={{ 
-                background: 'linear-gradient(135deg, #2E5090 0%, #5a7bb8 100%)',
-                color: 'white',
-                height: '100%',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 6,
-                }
-              }}
-            >
+            <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Box display="flex" alignItems="center" justifyContent="space-between">
                   <Box>
-                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 1 }}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
                       Ventas del Día
                     </Typography>
-                    <Typography variant="h4" fontWeight={600}>
+                    <Typography variant="h5" fontWeight={600} color="primary">
                       {formatCurrency(stats?.totalSalesToday || 0)}
                     </Typography>
                   </Box>
                   <Box
                     sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      backgroundColor: 'primary.light',
                       borderRadius: '50%',
                       p: 1.5,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      opacity: 0.1,
                     }}
                   >
-                    <AttachMoney sx={{ fontSize: 32, color: 'white' }} />
+                    <AttachMoney sx={{ fontSize: 32, color: 'primary.main' }} />
                   </Box>
                 </Box>
               </CardContent>
@@ -149,31 +139,20 @@ export default function Dashboard() {
 
           {/* New Clients Today */}
           <Grid item xs={12} sm={6} md={3}>
-            <Card 
-              sx={{ 
-                background: 'linear-gradient(135deg, #ff9800 0%, #ffb74d 100%)',
-                color: 'white',
-                height: '100%',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 6,
-                }
-              }}
-            >
+            <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Box display="flex" alignItems="center" justifyContent="space-between">
                   <Box>
-                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 1 }}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
                       Clientes Nuevos
                     </Typography>
-                    <Typography variant="h4" fontWeight={600}>
+                    <Typography variant="h5" fontWeight={600}>
                       {stats?.newClientsToday || 0}
                     </Typography>
                   </Box>
                   <Box
                     sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      backgroundColor: 'action.hover',
                       borderRadius: '50%',
                       p: 1.5,
                       display: 'flex',
@@ -181,7 +160,7 @@ export default function Dashboard() {
                       justifyContent: 'center',
                     }}
                   >
-                    <People sx={{ fontSize: 32, color: 'white' }} />
+                    <People sx={{ fontSize: 32, color: 'text.secondary' }} />
                   </Box>
                 </Box>
               </CardContent>
@@ -190,35 +169,18 @@ export default function Dashboard() {
 
           {/* Cash Register Status */}
           <Grid item xs={12} sm={6} md={3}>
-            <Card 
-              sx={{ 
-                background: stats?.cashRegisterStatus.isOpen 
-                  ? 'linear-gradient(135deg, #4caf50 0%, #81c784 100%)'
-                  : 'linear-gradient(135deg, #f44336 0%, #e57373 100%)',
-                color: 'white',
-                height: '100%',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 6,
-                }
-              }}
-            >
+            <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Box display="flex" alignItems="center" justifyContent="space-between">
                   <Box>
-                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 1 }}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
                       Estado de Caja
                     </Typography>
                     <Chip
                       label={stats?.cashRegisterStatus.isOpen ? 'Abierta' : 'Cerrada'}
-                      sx={{ 
-                        backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                        color: 'white',
-                        fontWeight: 600,
-                        mb: 1
-                      }}
+                      color={stats?.cashRegisterStatus.isOpen ? 'success' : 'error'}
                       size="small"
+                      sx={{ mb: 1 }}
                     />
                     <Typography variant="h6" fontWeight={600}>
                       {formatCurrency(stats?.cashRegisterStatus.currentBalance || 0)}
@@ -226,7 +188,7 @@ export default function Dashboard() {
                   </Box>
                   <Box
                     sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      backgroundColor: 'action.hover',
                       borderRadius: '50%',
                       p: 1.5,
                       display: 'flex',
@@ -234,7 +196,7 @@ export default function Dashboard() {
                       justifyContent: 'center',
                     }}
                   >
-                    <AccountBalance sx={{ fontSize: 32, color: 'white' }} />
+                    <AccountBalance sx={{ fontSize: 32, color: 'text.secondary' }} />
                   </Box>
                 </Box>
               </CardContent>
@@ -243,31 +205,20 @@ export default function Dashboard() {
 
           {/* Low Stock Alerts */}
           <Grid item xs={12} sm={6} md={3}>
-            <Card 
-              sx={{ 
-                background: 'linear-gradient(135deg, #ff9800 0%, #ffb74d 100%)',
-                color: 'white',
-                height: '100%',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 6,
-                }
-              }}
-            >
+            <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Box display="flex" alignItems="center" justifyContent="space-between">
                   <Box>
-                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 1 }}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
                       Alertas de Stock
                     </Typography>
-                    <Typography variant="h4" fontWeight={600}>
+                    <Typography variant="h5" fontWeight={600} color="warning.main">
                       {stats?.lowStockAlerts.length || 0}
                     </Typography>
                   </Box>
                   <Box
                     sx={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      backgroundColor: 'action.hover',
                       borderRadius: '50%',
                       p: 1.5,
                       display: 'flex',
@@ -275,7 +226,7 @@ export default function Dashboard() {
                       justifyContent: 'center',
                     }}
                   >
-                    <Warning sx={{ fontSize: 32, color: 'white' }} />
+                    <Warning sx={{ fontSize: 32, color: 'warning.main' }} />
                   </Box>
                 </Box>
               </CardContent>
@@ -284,14 +235,11 @@ export default function Dashboard() {
 
           {/* Top Products */}
           <Grid item xs={12} md={6}>
-            <Card sx={{ height: '100%', boxShadow: 2 }}>
+            <Card sx={{ height: '100%' }}>
               <CardContent>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <Restaurant color="primary" sx={{ mr: 1, fontSize: 28 }} />
-                  <Typography variant="h6" fontWeight={600}>
-                    Productos Más Vendidos
-                  </Typography>
-                </Box>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  Productos Más Vendidos
+                </Typography>
                 {stats?.topProducts.length ? (
                   <List sx={{ pt: 0 }}>
                     {stats.topProducts.map((product, index) => (
@@ -300,33 +248,17 @@ export default function Dashboard() {
                         divider
                         sx={{
                           py: 1.5,
-                          '&:hover': {
-                            backgroundColor: 'action.hover',
-                            borderRadius: 1,
-                          },
-                          transition: 'background-color 0.2s',
+                          px: 0,
                         }}
                       >
-                        <ListItemIcon>
-                          <Box
-                            sx={{
-                              backgroundColor: 'primary.main',
-                              color: 'white',
-                              borderRadius: '50%',
-                              width: 40,
-                              height: 40,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              fontWeight: 600,
-                            }}
-                          >
-                            {index + 1}
-                          </Box>
+                        <ListItemIcon sx={{ minWidth: 36 }}>
+                          <Typography variant="body2" color="text.secondary" fontWeight={600}>
+                            {index + 1}.
+                          </Typography>
                         </ListItemIcon>
                         <ListItemText
                           primary={
-                            <Typography variant="body1" fontWeight={500}>
+                            <Typography variant="body1">
                               {product.name}
                             </Typography>
                           }
@@ -346,7 +278,6 @@ export default function Dashboard() {
                   </List>
                 ) : (
                   <Box textAlign="center" py={4}>
-                    <Restaurant sx={{ fontSize: 48, color: 'text.disabled', mb: 1 }} />
                     <Typography color="text.secondary">
                       No hay ventas registradas hoy
                     </Typography>
@@ -358,14 +289,11 @@ export default function Dashboard() {
 
           {/* Low Stock Alerts */}
           <Grid item xs={12} md={6}>
-            <Card sx={{ height: '100%', boxShadow: 2 }}>
+            <Card sx={{ height: '100%' }}>
               <CardContent>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <Warning color="warning" sx={{ mr: 1, fontSize: 28 }} />
-                  <Typography variant="h6" fontWeight={600}>
-                    Alertas de Stock Bajo
-                  </Typography>
-                </Box>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  Alertas de Stock Bajo
+                </Typography>
                 {stats?.lowStockAlerts.length ? (
                   <List sx={{ pt: 0 }}>
                     {stats.lowStockAlerts.map((alert, index) => (
@@ -374,34 +302,22 @@ export default function Dashboard() {
                         divider
                         sx={{
                           py: 1.5,
-                          '&:hover': {
-                            backgroundColor: 'action.hover',
-                            borderRadius: 1,
-                          },
-                          transition: 'background-color 0.2s',
+                          px: 0,
                         }}
                       >
-                        <ListItemIcon>
-                          <Warning color="warning" sx={{ fontSize: 28 }} />
+                        <ListItemIcon sx={{ minWidth: 36 }}>
+                          <Warning color="warning" />
                         </ListItemIcon>
                         <ListItemText
                           primary={
-                            <Typography variant="body1" fontWeight={500}>
+                            <Typography variant="body1">
                               {alert.name}
                             </Typography>
                           }
                           secondary={
-                            <Box display="flex" gap={2} mt={0.5}>
-                              <Chip
-                                label={`Stock: ${alert.currentStock}`}
-                                color="error"
-                                size="small"
-                                variant="outlined"
-                              />
-                              <Typography variant="body2" color="text.secondary">
-                                Mínimo: {alert.minStock}
-                              </Typography>
-                            </Box>
+                            <Typography variant="body2" color="text.secondary" mt={0.5}>
+                              Stock actual: {alert.currentStock} (Mínimo: {alert.minStock})
+                            </Typography>
                           }
                         />
                       </ListItem>
@@ -409,7 +325,6 @@ export default function Dashboard() {
                   </List>
                 ) : (
                   <Box textAlign="center" py={4}>
-                    <Warning sx={{ fontSize: 48, color: 'success.main', mb: 1 }} />
                     <Typography color="text.secondary">
                       Todos los productos tienen stock suficiente
                     </Typography>

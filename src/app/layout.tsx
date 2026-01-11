@@ -10,9 +10,6 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 's1mple_pos - Sistema de Gestión',
   description: 'Sistema de gestión POS',
-  icons: {
-    icon: '/favicon.ico',
-  },
 }
 
 export default function RootLayout({

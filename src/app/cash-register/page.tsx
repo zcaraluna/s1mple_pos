@@ -356,63 +356,34 @@ export default function CashRegisterPage() {
         <Grid container spacing={3}>
           {/* Cash Register Status */}
           <Grid item xs={12} md={6}>
-            <Card sx={{ height: '100%', boxShadow: 2 }}>
+            <Card sx={{ height: '100%' }}>
               <CardContent>
-                <Box display="flex" alignItems="center" mb={3}>
-                  <Box
-                    sx={{
-                      backgroundColor: cashRegister?.isOpen ? 'success.main' : 'error.main',
-                      borderRadius: '50%',
-                      p: 1.5,
-                      mr: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <AccountBalance sx={{ fontSize: 32, color: 'white' }} />
-                  </Box>
-                  <Box>
-                    <Typography variant="h5" fontWeight={600}>
-                      Estado de la Caja
-                    </Typography>
-                    <Chip
-                      label={cashRegister?.isOpen ? 'Abierta' : 'Cerrada'}
-                      color={cashRegister?.isOpen ? 'success' : 'error'}
-                      size="medium"
-                      sx={{ mt: 0.5 }}
-                    />
-                  </Box>
-                </Box>
-
-                <Box 
-                  sx={{ 
-                    backgroundColor: 'primary.main',
-                    color: 'white',
-                    borderRadius: 2,
-                    p: 3,
-                    mb: 3,
-                    textAlign: 'center',
-                  }}
-                >
-                  <Typography variant="body2" sx={{ opacity: 0.9, mb: 1 }}>
-                    Balance Actual
-                  </Typography>
-                  <Typography variant="h3" fontWeight={600}>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  Estado de la Caja
+                </Typography>
+                
+                <Box mb={3}>
+                  <Chip
+                    label={cashRegister?.isOpen ? 'Abierta' : 'Cerrada'}
+                    color={cashRegister?.isOpen ? 'success' : 'error'}
+                    size="medium"
+                    sx={{ mb: 2 }}
+                  />
+                  <Typography variant="h5" fontWeight={600} color="primary" gutterBottom>
                     {formatCurrency(Number(cashRegister?.currentBalance || 0))}
                   </Typography>
                 </Box>
 
                 {(cashRegister?.lastOpenedAt || cashRegister?.lastClosedAt) && (
-                  <Box mb={3} p={2} sx={{ bgcolor: 'grey.50', borderRadius: 1 }}>
+                  <Box mb={3}>
                     {cashRegister?.lastOpenedAt && (
                       <Typography variant="body2" color="text.secondary" gutterBottom>
-                        <strong>Última apertura:</strong> {formatDate(cashRegister.lastOpenedAt)}
+                        Última apertura: {formatDate(cashRegister.lastOpenedAt)}
                       </Typography>
                     )}
                     {cashRegister?.lastClosedAt && (
                       <Typography variant="body2" color="text.secondary">
-                        <strong>Último cierre:</strong> {formatDate(cashRegister.lastClosedAt)}
+                        Último cierre: {formatDate(cashRegister.lastClosedAt)}
                       </Typography>
                     )}
                   </Box>
@@ -423,33 +394,29 @@ export default function CashRegisterPage() {
                     <Button
                       variant="contained"
                       color="success"
-                      size="large"
                       fullWidth
                       startIcon={<LockOpen />}
                       onClick={() => handleOpenDialog('open')}
-                      sx={{ py: 1.5 }}
                     >
                       Abrir Caja
                     </Button>
                   ) : (
                     <>
                       <Button
-                        variant="contained"
+                        variant="outlined"
                         color="warning"
-                        size="large"
                         startIcon={<TrendingDown />}
                         onClick={() => handleOpenDialog('extract')}
-                        sx={{ flex: 1, py: 1.5 }}
+                        sx={{ flex: 1 }}
                       >
                         Extraer Dinero
                       </Button>
                       <Button
                         variant="contained"
                         color="error"
-                        size="large"
                         startIcon={<Receipt />}
                         onClick={() => handleOpenDialog('close')}
-                        sx={{ flex: 1, py: 1.5 }}
+                        sx={{ flex: 1 }}
                       >
                         Cerrar Caja
                       </Button>
@@ -462,131 +429,63 @@ export default function CashRegisterPage() {
 
           {/* Payment Summary */}
           <Grid item xs={12} md={6}>
-            <Card sx={{ height: '100%', boxShadow: 2 }}>
+            <Card sx={{ height: '100%' }}>
               <CardContent>
-                <Box display="flex" alignItems="center" mb={3}>
-                  <Box
-                    sx={{
-                      backgroundColor: 'primary.main',
-                      borderRadius: '50%',
-                      p: 1.5,
-                      mr: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <AttachMoney sx={{ fontSize: 32, color: 'white' }} />
-                  </Box>
-                  <Typography variant="h5" fontWeight={600}>
-                    Resumen de la Jornada
-                  </Typography>
-                </Box>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  Resumen de la Jornada
+                </Typography>
 
                 {/* Información de la jornada */}
                 {paymentSummary.sessionInfo.openedAt && (
-                  <Box mb={3} p={2.5} sx={{ bgcolor: 'primary.light', borderRadius: 2, color: 'white' }}>
-                    <Typography variant="body2" sx={{ opacity: 0.9, mb: 1.5, fontWeight: 600 }}>
-                      Información de la Jornada
+                  <Box mb={3} p={2} sx={{ bgcolor: 'grey.50', borderRadius: 1 }}>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                      <strong>Apertura:</strong> {formatDate(paymentSummary.sessionInfo.openedAt)}
                     </Typography>
-                    <Box display="flex" flexDirection="column" gap={0.5}>
-                      <Typography variant="body2" sx={{ opacity: 0.95 }}>
-                        <strong>Apertura:</strong> {formatDate(paymentSummary.sessionInfo.openedAt)}
+                    {paymentSummary.sessionInfo.closedAt && (
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <strong>Cierre:</strong> {formatDate(paymentSummary.sessionInfo.closedAt)}
                       </Typography>
-                      {paymentSummary.sessionInfo.closedAt && (
-                        <Typography variant="body2" sx={{ opacity: 0.95 }}>
-                          <strong>Cierre:</strong> {formatDate(paymentSummary.sessionInfo.closedAt)}
-                        </Typography>
-                      )}
-                      <Typography variant="body2" sx={{ opacity: 0.95 }}>
-                        <strong>Horas de apertura:</strong> {formatHours(paymentSummary.sessionInfo.hoursOpen)}
-                      </Typography>
-                    </Box>
+                    )}
+                    <Typography variant="body2" color="text.secondary">
+                      <strong>Horas de apertura:</strong> {formatHours(paymentSummary.sessionInfo.hoursOpen)}
+                    </Typography>
                   </Box>
                 )}
 
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
-                    <Box 
-                      textAlign="center" 
-                      p={2.5} 
-                      sx={{ 
-                        background: 'linear-gradient(135deg, #4caf50 0%, #81c784 100%)',
-                        borderRadius: 2,
-                        color: 'white',
-                        transition: 'transform 0.2s',
-                        '&:hover': {
-                          transform: 'scale(1.02)',
-                        }
-                      }}
-                    >
-                      <Typography variant="body2" sx={{ opacity: 0.9, mb: 1, fontWeight: 500 }}>
+                    <Box textAlign="center" p={2} sx={{ bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
                         Efectivo
                       </Typography>
-                      <Typography variant="h6" fontWeight={700}>
+                      <Typography variant="h6" fontWeight={600}>
                         {formatCurrency(paymentSummary.cash)}
                       </Typography>
                     </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Box 
-                      textAlign="center" 
-                      p={2.5} 
-                      sx={{ 
-                        background: 'linear-gradient(135deg, #2E5090 0%, #5a7bb8 100%)',
-                        borderRadius: 2,
-                        color: 'white',
-                        transition: 'transform 0.2s',
-                        '&:hover': {
-                          transform: 'scale(1.02)',
-                        }
-                      }}
-                    >
-                      <Typography variant="body2" sx={{ opacity: 0.9, mb: 1, fontWeight: 500 }}>
+                    <Box textAlign="center" p={2} sx={{ bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
                         Tarjeta
                       </Typography>
-                      <Typography variant="h6" fontWeight={700}>
+                      <Typography variant="h6" fontWeight={600}>
                         {formatCurrency(paymentSummary.card)}
                       </Typography>
                     </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Box 
-                      textAlign="center" 
-                      p={2.5} 
-                      sx={{ 
-                        background: 'linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)',
-                        borderRadius: 2,
-                        color: 'white',
-                        transition: 'transform 0.2s',
-                        '&:hover': {
-                          transform: 'scale(1.02)',
-                        }
-                      }}
-                    >
-                      <Typography variant="body2" sx={{ opacity: 0.9, mb: 1, fontWeight: 500 }}>
+                    <Box textAlign="center" p={2} sx={{ bgcolor: 'grey.50', borderRadius: 1 }}>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
                         Transferencia
                       </Typography>
-                      <Typography variant="h6" fontWeight={700}>
+                      <Typography variant="h6" fontWeight={600}>
                         {formatCurrency(paymentSummary.transfer)}
                       </Typography>
                     </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Box 
-                      textAlign="center" 
-                      p={2.5} 
-                      sx={{ 
-                        background: 'linear-gradient(135deg, #424242 0%, #616161 100%)',
-                        borderRadius: 2,
-                        color: 'white',
-                        transition: 'transform 0.2s',
-                        '&:hover': {
-                          transform: 'scale(1.02)',
-                        }
-                      }}
-                    >
-                      <Typography variant="body2" sx={{ opacity: 0.9, mb: 1, fontWeight: 500 }}>
+                    <Box textAlign="center" p={2} sx={{ bgcolor: 'primary.main', borderRadius: 1, color: 'white' }}>
+                      <Typography variant="body2" sx={{ opacity: 0.9 }} gutterBottom>
                         Total
                       </Typography>
                       <Typography variant="h6" fontWeight={700}>
@@ -601,31 +500,15 @@ export default function CashRegisterPage() {
 
           {/* Recent Movements */}
           <Grid item xs={12}>
-            <Card sx={{ boxShadow: 2 }}>
+            <Card>
               <CardContent>
-                <Box display="flex" alignItems="center" mb={3}>
-                  <Box
-                    sx={{
-                      backgroundColor: 'primary.main',
-                      borderRadius: '50%',
-                      p: 1.5,
-                      mr: 2,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <History sx={{ fontSize: 32, color: 'white' }} />
-                  </Box>
-                  <Typography variant="h5" fontWeight={600}>
-                    Movimientos Recientes
-                  </Typography>
-                </Box>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  Movimientos Recientes
+                </Typography>
 
                 {movements.length === 0 ? (
-                  <Box textAlign="center" py={6}>
-                    <History sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
-                    <Typography color="text.secondary" variant="h6">
+                  <Box textAlign="center" py={4}>
+                    <Typography color="text.secondary">
                       No hay movimientos registrados
                     </Typography>
                   </Box>
@@ -636,42 +519,21 @@ export default function CashRegisterPage() {
                         key={movement.id} 
                         divider
                         sx={{
-                          py: 2,
-                          px: 2,
-                          '&:hover': {
-                            backgroundColor: 'action.hover',
-                            borderRadius: 1,
-                          },
-                          transition: 'background-color 0.2s',
+                          py: 1.5,
+                          px: 0,
                         }}
                       >
-                        <ListItemIcon sx={{ minWidth: 48 }}>
-                          <Box
-                            sx={{
-                              backgroundColor: 
-                                movement.type === 'SALE' || movement.type === 'OPENING'
-                                  ? 'success.light'
-                                  : movement.type === 'EXTRACTION'
-                                  ? 'warning.light'
-                                  : 'error.light',
-                              borderRadius: '50%',
-                              p: 1,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            {getMovementIcon(movement.type)}
-                          </Box>
+                        <ListItemIcon sx={{ minWidth: 40 }}>
+                          {getMovementIcon(movement.type)}
                         </ListItemIcon>
                         <ListItemText
                           primary={
-                            <Box display="flex" justifyContent="space-between" alignItems="center" mb={0.5}>
-                              <Typography variant="body1" fontWeight={500}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                              <Typography variant="body1">
                                 {getMovementLabel(movement.type)}
                               </Typography>
                               <Typography
-                                variant="h6"
+                                variant="body1"
                                 fontWeight={600}
                                 color={
                                   movement.type === 'SALE' || movement.type === 'OPENING'
@@ -687,7 +549,7 @@ export default function CashRegisterPage() {
                             </Box>
                           }
                           secondary={
-                            <Box>
+                            <Box mt={0.5}>
                               {movement.description && (
                                 <Typography variant="body2" color="text.secondary" gutterBottom>
                                   {movement.description}
@@ -706,13 +568,12 @@ export default function CashRegisterPage() {
 
                 {/* Pagination */}
                 {movementsTotal > 10 && (
-                  <Box display="flex" justifyContent="center" mt={3}>
+                  <Box display="flex" justifyContent="center" mt={2}>
                     <Pagination
                       count={Math.ceil(movementsTotal / 10)}
                       page={movementsPage}
                       onChange={(event, page) => fetchCashRegister(page)}
                       color="primary"
-                      size="large"
                     />
                   </Box>
                 )}
