@@ -8,13 +8,17 @@ import {
   CardContent,
   Typography,
   Chip,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
   Alert,
   CircularProgress,
   Button,
+  Divider,
 } from '@mui/material'
 import {
   TrendingUp,
@@ -23,6 +27,7 @@ import {
   Restaurant,
   Warning,
   AttachMoney,
+  ShoppingCart,
 } from '@mui/icons-material'
 import { useAuth } from '@/contexts/AuthContext'
 import AppLayout from '@/components/Layout/AppLayout'
@@ -91,12 +96,13 @@ export default function Dashboard() {
   return (
     <AppLayout>
       <Box>
+        {/* Header */}
         <Box mb={4}>
-          <Typography variant="h4" fontWeight={600} gutterBottom>
-            ¡Bienvenido, {user?.name}!
+          <Typography variant="h5" fontWeight={600} gutterBottom>
+            Dashboard
           </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Resumen del día - {new Date().toLocaleDateString('es-PY', { 
+          <Typography variant="body2" color="text.secondary">
+            {new Date().toLocaleDateString('es-PY', { 
               weekday: 'long', 
               year: 'numeric', 
               month: 'long', 
@@ -105,177 +111,115 @@ export default function Dashboard() {
           </Typography>
         </Box>
 
+        {/* Metrics Grid */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Ventas del Día
+                </Typography>
+                <Typography variant="h4" fontWeight={600} color="primary">
+                  {formatCurrency(stats?.totalSalesToday || 0)}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Clientes Nuevos
+                </Typography>
+                <Typography variant="h4" fontWeight={600}>
+                  {stats?.newClientsToday || 0}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card variant="outlined">
+              <CardContent>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
+                  <Typography variant="body2" color="text.secondary">
+                    Estado de Caja
+                  </Typography>
+                  <Chip
+                    label={stats?.cashRegisterStatus.isOpen ? 'Abierta' : 'Cerrada'}
+                    color={stats?.cashRegisterStatus.isOpen ? 'success' : 'default'}
+                    size="small"
+                  />
+                </Box>
+                <Typography variant="h4" fontWeight={600}>
+                  {formatCurrency(stats?.cashRegisterStatus.currentBalance || 0)}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Alertas de Stock
+                </Typography>
+                <Typography variant="h4" fontWeight={600} color={stats?.lowStockAlerts.length ? 'warning.main' : 'text.primary'}>
+                  {stats?.lowStockAlerts.length || 0}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Main Content Grid */}
         <Grid container spacing={3}>
-          {/* Total Sales Today */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
-                <Box display="flex" alignItems="center" justifyContent="space-between">
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      Ventas del Día
-                    </Typography>
-                    <Typography variant="h5" fontWeight={600} color="primary">
-                      {formatCurrency(stats?.totalSalesToday || 0)}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      backgroundColor: 'primary.light',
-                      borderRadius: '50%',
-                      p: 1.5,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      opacity: 0.1,
-                    }}
-                  >
-                    <AttachMoney sx={{ fontSize: 32, color: 'primary.main' }} />
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* New Clients Today */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
-                <Box display="flex" alignItems="center" justifyContent="space-between">
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      Clientes Nuevos
-                    </Typography>
-                    <Typography variant="h5" fontWeight={600}>
-                      {stats?.newClientsToday || 0}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      backgroundColor: 'action.hover',
-                      borderRadius: '50%',
-                      p: 1.5,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <People sx={{ fontSize: 32, color: 'text.secondary' }} />
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Cash Register Status */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
-                <Box display="flex" alignItems="center" justifyContent="space-between">
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      Estado de Caja
-                    </Typography>
-                    <Chip
-                      label={stats?.cashRegisterStatus.isOpen ? 'Abierta' : 'Cerrada'}
-                      color={stats?.cashRegisterStatus.isOpen ? 'success' : 'error'}
-                      size="small"
-                      sx={{ mb: 1 }}
-                    />
-                    <Typography variant="h6" fontWeight={600}>
-                      {formatCurrency(stats?.cashRegisterStatus.currentBalance || 0)}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      backgroundColor: 'action.hover',
-                      borderRadius: '50%',
-                      p: 1.5,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <AccountBalance sx={{ fontSize: 32, color: 'text.secondary' }} />
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Low Stock Alerts */}
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent>
-                <Box display="flex" alignItems="center" justifyContent="space-between">
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      Alertas de Stock
-                    </Typography>
-                    <Typography variant="h5" fontWeight={600} color="warning.main">
-                      {stats?.lowStockAlerts.length || 0}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      backgroundColor: 'action.hover',
-                      borderRadius: '50%',
-                      p: 1.5,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Warning sx={{ fontSize: 32, color: 'warning.main' }} />
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
           {/* Top Products */}
-          <Grid item xs={12} md={6}>
-            <Card sx={{ height: '100%' }}>
+          <Grid item xs={12} md={8}>
+            <Card variant="outlined">
               <CardContent>
                 <Typography variant="h6" fontWeight={600} gutterBottom>
                   Productos Más Vendidos
                 </Typography>
                 {stats?.topProducts.length ? (
-                  <List sx={{ pt: 0 }}>
-                    {stats.topProducts.map((product, index) => (
-                      <ListItem 
-                        key={index} 
-                        divider
-                        sx={{
-                          py: 1.5,
-                          px: 0,
-                        }}
-                      >
-                        <ListItemIcon sx={{ minWidth: 36 }}>
-                          <Typography variant="body2" color="text.secondary" fontWeight={600}>
-                            {index + 1}.
-                          </Typography>
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <Typography variant="body1">
-                              {product.name}
-                            </Typography>
-                          }
-                          secondary={
-                            <Box display="flex" gap={2} mt={0.5}>
-                              <Typography variant="body2" color="text.secondary">
-                                {product.quantity} unidades
+                  <TableContainer>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Producto</TableCell>
+                          <TableCell align="right">Cantidad</TableCell>
+                          <TableCell align="right">Total</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {stats.topProducts.map((product, index) => (
+                          <TableRow key={index} hover>
+                            <TableCell>
+                              <Box display="flex" alignItems="center" gap={1}>
+                                <Typography variant="body2" color="text.secondary">
+                                  {index + 1}.
+                                </Typography>
+                                <Typography variant="body2">
+                                  {product.name}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography variant="body2">
+                                {product.quantity}
                               </Typography>
-                              <Typography variant="body2" color="primary.main" fontWeight={600}>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Typography variant="body2" fontWeight={600}>
                                 {formatCurrency(product.revenue)}
                               </Typography>
-                            </Box>
-                          }
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 ) : (
                   <Box textAlign="center" py={4}>
                     <Typography color="text.secondary">
@@ -288,44 +232,39 @@ export default function Dashboard() {
           </Grid>
 
           {/* Low Stock Alerts */}
-          <Grid item xs={12} md={6}>
-            <Card sx={{ height: '100%' }}>
+          <Grid item xs={12} md={4}>
+            <Card variant="outlined">
               <CardContent>
                 <Typography variant="h6" fontWeight={600} gutterBottom>
-                  Alertas de Stock Bajo
+                  Alertas de Stock
                 </Typography>
                 {stats?.lowStockAlerts.length ? (
-                  <List sx={{ pt: 0 }}>
+                  <Box>
                     {stats.lowStockAlerts.map((alert, index) => (
-                      <ListItem 
-                        key={index} 
-                        divider
-                        sx={{
-                          py: 1.5,
-                          px: 0,
-                        }}
-                      >
-                        <ListItemIcon sx={{ minWidth: 36 }}>
-                          <Warning color="warning" />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={
-                            <Typography variant="body1">
-                              {alert.name}
-                            </Typography>
-                          }
-                          secondary={
-                            <Typography variant="body2" color="text.secondary" mt={0.5}>
-                              Stock actual: {alert.currentStock} (Mínimo: {alert.minStock})
-                            </Typography>
-                          }
-                        />
-                      </ListItem>
+                      <Box key={index} mb={index < stats.lowStockAlerts.length - 1 ? 2 : 0}>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={0.5}>
+                          <Typography variant="body2" fontWeight={500}>
+                            {alert.name}
+                          </Typography>
+                          <Chip
+                            label={`${alert.currentStock}`}
+                            color="error"
+                            size="small"
+                            variant="outlined"
+                          />
+                        </Box>
+                        <Typography variant="caption" color="text.secondary">
+                          Mínimo: {alert.minStock}
+                        </Typography>
+                        {index < stats.lowStockAlerts.length - 1 && (
+                          <Divider sx={{ mt: 2 }} />
+                        )}
+                      </Box>
                     ))}
-                  </List>
+                  </Box>
                 ) : (
                   <Box textAlign="center" py={4}>
-                    <Typography color="text.secondary">
+                    <Typography color="text.secondary" variant="body2">
                       Todos los productos tienen stock suficiente
                     </Typography>
                   </Box>
@@ -338,5 +277,3 @@ export default function Dashboard() {
     </AppLayout>
   )
 }
-
-
