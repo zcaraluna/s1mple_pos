@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { getSession } from '@/lib/auth'
+import { getSessionFromRequest } from '@/lib/auth'
 
 export async function middleware(request: NextRequest) {
-  const session = await getSession()
+  const session = await getSessionFromRequest(request)
   const { pathname } = request.nextUrl
 
   // Public routes that don't require authentication

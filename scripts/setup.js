@@ -31,7 +31,7 @@ NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-nextauth-secret-key"
 
 # App Configuration
-APP_NAME="Pizza Management System"
+APP_NAME="s1mple_pos"
 APP_VERSION="1.0.0"
 
 # Printer Configuration

@@ -5,7 +5,7 @@ import { ClientData } from '@/types'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -13,8 +13,9 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     const client = await prisma.client.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!client) {
@@ -33,7 +34,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -41,11 +42,12 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     const data: ClientData = await request.json()
 
     // Get current client for audit log
     const currentClient = await prisma.client.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!currentClient) {
@@ -53,7 +55,7 @@ export async function PUT(
     }
 
     const updatedClient = await prisma.client.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name: data.name,
         lastName: data.lastName,
@@ -71,7 +73,7 @@ export async function PUT(
         userId: user.id,
         action: 'UPDATE_CLIENT',
         tableName: 'clients',
-        recordId: params.id,
+        recordId: id,
         oldValues: currentClient,
         newValues: updatedClient,
       },
@@ -95,7 +97,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -103,9 +105,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     // Check if client has sales
     const salesCount = await prisma.sale.count({
-      where: { clientId: params.id },
+      where: { clientId: id },
     })
 
     if (salesCount > 0) {
@@ -116,7 +119,7 @@ export async function DELETE(
     }
 
     const client = await prisma.client.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     // Log the action
@@ -125,7 +128,7 @@ export async function DELETE(
         userId: user.id,
         action: 'DELETE_CLIENT',
         tableName: 'clients',
-        recordId: params.id,
+        recordId: id,
         oldValues: client,
       },
     })

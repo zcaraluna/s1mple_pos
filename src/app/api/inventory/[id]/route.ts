@@ -5,7 +5,7 @@ import { IngredientData } from '@/types'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -13,8 +13,9 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     const ingredient = await prisma.ingredient.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         inventoryMovements: {
           orderBy: { createdAt: 'desc' },
@@ -44,7 +45,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -52,11 +53,12 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     const data: IngredientData = await request.json()
 
     // Get current ingredient for audit log
     const currentIngredient = await prisma.ingredient.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!currentIngredient) {
@@ -64,7 +66,7 @@ export async function PUT(
     }
 
     const updatedIngredient = await prisma.ingredient.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name: data.name,
         description: data.description,
@@ -81,7 +83,7 @@ export async function PUT(
         userId: user.id,
         action: 'UPDATE_INGREDIENT',
         tableName: 'ingredients',
-        recordId: params.id,
+        recordId: id,
         oldValues: currentIngredient,
         newValues: updatedIngredient,
       },
@@ -105,7 +107,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -113,9 +115,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     // Check if ingredient is used in products
     const productCount = await prisma.productIngredient.count({
-      where: { ingredientId: params.id },
+      where: { ingredientId: id },
     })
 
     if (productCount > 0) {
@@ -126,7 +129,7 @@ export async function DELETE(
     }
 
     const ingredient = await prisma.ingredient.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     // Log the action
@@ -135,7 +138,7 @@ export async function DELETE(
         userId: user.id,
         action: 'DELETE_INGREDIENT',
         tableName: 'ingredients',
-        recordId: params.id,
+        recordId: id,
         oldValues: ingredient,
       },
     })

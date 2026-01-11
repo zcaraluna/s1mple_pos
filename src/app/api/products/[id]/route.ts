@@ -5,7 +5,7 @@ import { ProductData } from '@/types'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -13,8 +13,9 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     const product = await prisma.product.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         productIngredients: {
           include: {
@@ -40,7 +41,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -48,11 +49,12 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     const data: ProductData = await request.json()
 
     // Get current product for audit log
     const currentProduct = await prisma.product.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!currentProduct) {
@@ -60,7 +62,7 @@ export async function PUT(
     }
 
     const updatedProduct = await prisma.product.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name: data.name,
         description: data.description,
@@ -77,7 +79,7 @@ export async function PUT(
         userId: user.id,
         action: 'UPDATE_PRODUCT',
         tableName: 'products',
-        recordId: params.id,
+        recordId: id,
         oldValues: currentProduct,
         newValues: updatedProduct,
       },
@@ -95,7 +97,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -103,9 +105,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
     // Check if product has sales
     const salesCount = await prisma.saleItem.count({
-      where: { productId: params.id },
+      where: { productId: id },
     })
 
     if (salesCount > 0) {
@@ -116,7 +119,7 @@ export async function DELETE(
     }
 
     const product = await prisma.product.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     // Log the action
@@ -125,7 +128,7 @@ export async function DELETE(
         userId: user.id,
         action: 'DELETE_PRODUCT',
         tableName: 'products',
-        recordId: params.id,
+        recordId: id,
         oldValues: product,
       },
     })

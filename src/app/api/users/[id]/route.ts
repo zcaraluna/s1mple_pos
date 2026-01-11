@@ -5,7 +5,7 @@ import { hashPassword } from '@/lib/auth'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -18,8 +18,9 @@ export async function GET(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    const { id } = await params
     const targetUser = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: {
         id: true,
         name: true,
@@ -51,7 +52,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -64,11 +65,12 @@ export async function PUT(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    const { id } = await params
     const data = await request.json()
 
     // Get current user for audit log
     const currentUser = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!currentUser) {
@@ -122,7 +124,7 @@ export async function PUT(
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
     })
 
@@ -132,7 +134,7 @@ export async function PUT(
         userId: user.id,
         action: 'UPDATE_USER',
         tableName: 'users',
-        recordId: params.id,
+        recordId: id,
         oldValues: {
           name: currentUser.name,
           lastName: currentUser.lastName,
@@ -166,7 +168,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getSession()
@@ -179,8 +181,9 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    const { id } = await params
     // No se puede eliminar a sí mismo
-    if (user.id === params.id) {
+    if (user.id === id) {
       return NextResponse.json(
         { error: 'No puedes eliminar tu propia cuenta' },
         { status: 400 }
@@ -188,7 +191,7 @@ export async function DELETE(
     }
 
     const targetUser = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!targetUser) {
@@ -197,7 +200,7 @@ export async function DELETE(
 
     // Check if user has sales
     const salesCount = await prisma.sale.count({
-      where: { userId: params.id },
+      where: { userId: id },
     })
 
     if (salesCount > 0) {
@@ -208,7 +211,7 @@ export async function DELETE(
     }
 
     await prisma.user.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     // Log the action
@@ -217,7 +220,7 @@ export async function DELETE(
         userId: user.id,
         action: 'DELETE_USER',
         tableName: 'users',
-        recordId: params.id,
+        recordId: id,
         oldValues: {
           name: targetUser.name,
           lastName: targetUser.lastName,

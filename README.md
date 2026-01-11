@@ -79,7 +79,7 @@ Sistema completo de administración para pizzería desarrollado con Next.js, Typ
 ### 1. Clonar el repositorio
 ```bash
 git clone <repository-url>
-cd pizza-management-system
+cd s1mple_pos
 ```
 
 ### 2. Instalar dependencias
@@ -101,7 +101,7 @@ NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-nextauth-secret-key"
 
 # App Configuration
-APP_NAME="Pizza Management System"
+APP_NAME="s1mple_pos"
 APP_VERSION="1.0.0"
 
 # Printer Configuration

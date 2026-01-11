@@ -34,6 +34,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/es'
 import {
   Search,
@@ -89,7 +90,7 @@ export default function SalesHistoryPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [dateFilter, setDateFilter] = useState('today')
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null)
   const [availableDates, setAvailableDates] = useState<string[]>([])
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null)
   const [ticketDialogOpen, setTicketDialogOpen] = useState(false)
@@ -178,16 +179,10 @@ export default function SalesHistoryPage() {
           setLoading(false)
           return
         }
-        // Convertir a Date si no lo es
-        const dateObj = selectedDate instanceof Date ? selectedDate : new Date(selectedDate)
-        if (isNaN(dateObj.getTime())) {
-          console.error('Fecha inválida:', selectedDate)
-          setLoading(false)
-          return
-        }
-        startDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 0, 0, 0)
-        endDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 23, 59, 59)
-        console.log('Buscando ventas para fecha:', dateObj.toISOString().split('T')[0])
+        // selectedDate es Dayjs
+        startDate = selectedDate.startOf('day').toDate()
+        endDate = selectedDate.endOf('day').toDate()
+        console.log('Buscando ventas para fecha:', selectedDate.format('YYYY-MM-DD'))
       } else if (dateFilter === 'today') {
         startDate = getParaguayStartOfDay()
         endDate = getParaguayEndOfDay()
@@ -246,15 +241,9 @@ export default function SalesHistoryPage() {
           setLoading(false)
           return
         }
-        // Convertir a Date si no lo es
-        const dateObj = selectedDate instanceof Date ? selectedDate : new Date(selectedDate)
-        if (isNaN(dateObj.getTime())) {
-          console.error('Fecha inválida:', selectedDate)
-          setLoading(false)
-          return
-        }
-        startDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 0, 0, 0)
-        endDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 23, 59, 59)
+        // selectedDate es Dayjs
+        startDate = selectedDate.startOf('day').toDate()
+        endDate = selectedDate.endOf('day').toDate()
       } else if (dateFilter === 'today') {
         startDate = getParaguayStartOfDay()
         endDate = getParaguayEndOfDay()
@@ -438,9 +427,8 @@ export default function SalesHistoryPage() {
                       shouldDisableDate={(date) => {
                         if (!date) return false
                         try {
-                          const dateObj = date instanceof Date ? date : new Date(date)
-                          if (isNaN(dateObj.getTime())) return true
-                          const dateString = dateObj.toISOString().split('T')[0]
+                          // date es Dayjs
+                          const dateString = date.format('YYYY-MM-DD')
                           return !availableDates.includes(dateString)
                         } catch (error) {
                           console.error('Error en shouldDisableDate:', error)

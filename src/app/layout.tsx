@@ -8,8 +8,8 @@ import { AuthProvider } from '@/contexts/AuthContext'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Polipizza - Sistema de Gestión',
-  description: 'Sistema de gestión para Polipizza',
+  title: 's1mple_pos - Sistema de Gestión',
+  description: 'Sistema de gestión POS',
   icons: {
     icon: '/favicon.ico',
   },

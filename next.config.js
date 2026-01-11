@@ -21,9 +21,6 @@ const nextConfig = {
   trailingSlash: false,
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
   output: 'standalone',
-  experimental: {
-    outputFileTracingRoot: undefined,
-  },
 }
 
 module.exports = nextConfig

@@ -70,7 +70,7 @@ export async function createSession(user: AuthUser) {
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
   const session = await encrypt({ user, expires })
 
-  cookies().set('session', session, {
+  ;(await cookies()).set('session', session, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     expires,
@@ -80,7 +80,20 @@ export async function createSession(user: AuthUser) {
 }
 
 export async function getSession(): Promise<AuthUser | null> {
-  const session = cookies().get('session')?.value
+  const session = (await cookies()).get('session')?.value
+  if (!session) return null
+
+  try {
+    const payload = await decrypt(session)
+    return payload.user as AuthUser
+  } catch (error) {
+    return null
+  }
+}
+
+// Helper function for middleware (Next.js 15+ requires request.cookies)
+export async function getSessionFromRequest(request: { cookies: { get: (name: string) => { value: string } | undefined } }): Promise<AuthUser | null> {
+  const session = request.cookies.get('session')?.value
   if (!session) return null
 
   try {
@@ -92,7 +105,7 @@ export async function getSession(): Promise<AuthUser | null> {
 }
 
 export async function logout() {
-  cookies().set('session', '', {
+  ;(await cookies()).set('session', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     expires: new Date(0),
