@@ -5,9 +5,9 @@ import { createTheme } from '@mui/material/styles'
 export const theme = createTheme({
   palette: {
     primary: {
-      main: '#d32f2f', // Red for pizza theme
-      light: '#ff6659',
-      dark: '#9a0007',
+      main: '#424242', // Dark gray
+      light: '#6d6d6d',
+      dark: '#1d1d1d',
     },
     secondary: {
       main: '#ff9800', // Orange for secondary actions

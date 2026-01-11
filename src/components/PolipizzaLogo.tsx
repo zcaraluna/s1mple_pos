@@ -1,42 +1,31 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Box } from '@mui/material'
-import Image from 'next/image'
+import React from 'react'
+import { Box, Typography } from '@mui/material'
 
 export default function PolipizzaLogo({ size = 120 }: { size?: number }) {
-  const [imageSrc, setImageSrc] = useState('/polipizza.png')
-  const [hasError, setHasError] = useState(false)
-
-  const handleError = () => {
-    if (!hasError) {
-      setHasError(true)
-      setImageSrc('/api/logo')
-    }
-  }
-
   return (
     <Box
       sx={{
-        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         width: size,
         height: size,
         border: '2px solid #e0e0e0',
         borderRadius: '50%',
         backgroundColor: '#fafafa',
-        overflow: 'hidden'
       }}
     >
-      <Image
-        src={imageSrc}
-        alt="Polipizza"
-        fill
-        unoptimized
-        style={{
-          objectFit: 'contain'
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 600,
+          color: '#424242',
         }}
-        onError={handleError}
-      />
+      >
+        s1
+      </Typography>
     </Box>
   )
 }

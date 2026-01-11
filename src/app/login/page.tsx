@@ -71,7 +71,7 @@ export default function LoginPage() {
                <PolipizzaLogo size={120} />
              </Box>
              <Typography component="h1" variant="h4" gutterBottom>
-               Polipizza
+               s1mple_pos
              </Typography>
           </Box>
           

@@ -35,7 +35,6 @@ import {
   Notifications,
 } from '@mui/icons-material'
 import { useAuth } from '@/contexts/AuthContext'
-import Image from 'next/image'
 
 const drawerWidth = 240
 
@@ -92,16 +91,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div>
       <Toolbar>
         <Box display="flex" justifyContent="center" alignItems="center" sx={{ width: '100%' }}>
-          <Box sx={{ position: 'relative', width: 180, height: 180 }}>
-            <Image
-              src="/polipizza.png"
-              alt="Polipizza"
-              fill
-              unoptimized
-              style={{
-                objectFit: 'contain'
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 180,
+              height: 180,
+              border: '2px solid #e0e0e0',
+              borderRadius: '50%',
+              backgroundColor: '#fafafa',
+            }}
+          >
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: 600,
+                color: '#424242',
               }}
-            />
+            >
+              s1
+            </Typography>
           </Box>
         </Box>
       </Toolbar>
@@ -131,6 +141,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
+          borderRadius: 0,
         }}
       >
         <Toolbar>
