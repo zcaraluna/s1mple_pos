@@ -54,7 +54,7 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^8",
+    "eslint": "^9",
     "eslint-config-next": "^16.1.1",
     "prisma": "^5.7.1",
     "tsx": "^4.6.2",
