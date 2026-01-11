@@ -140,18 +140,18 @@ export default function Dashboard() {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <Card variant="outlined">
+            <Card 
+              variant="outlined"
+              sx={{
+                borderColor: stats?.cashRegisterStatus.isOpen ? 'success.main' : 'error.main',
+                borderWidth: 2,
+                borderStyle: 'solid',
+              }}
+            >
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
-                  <Typography variant="body2" color="text.secondary">
-                    Estado de Caja
-                  </Typography>
-                  <Chip
-                    label={stats?.cashRegisterStatus.isOpen ? 'Abierta' : 'Cerrada'}
-                    color={stats?.cashRegisterStatus.isOpen ? 'success' : 'default'}
-                    size="small"
-                  />
-                </Box>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Caja
+                </Typography>
                 <Typography variant="h4" fontWeight={600}>
                   {formatCurrency(stats?.cashRegisterStatus.currentBalance || 0)}
                 </Typography>
