@@ -6,25 +6,66 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Seeding database...')
 
-  // Create system admin user
-  const sysadminPassword = await bcrypt.hash('admin123', 12)
+  // Create users (upsert to avoid duplicates)
+  const defaultPassword = await bcrypt.hash('admin123', 12)
   
-  const sysadmin = await prisma.user.create({
-    data: {
-      name: 'Garv',
-      lastName: 'SysAdmin',
-      cedula: '1234567890',
-      phone: '+595981234567',
-      email: 'garv@pizzeria.com',
-      address: 'Asunción, Paraguay',
-      username: 'garv',
-      password: sysadminPassword,
-      role: 'SYSADMIN',
-    },
-  })
+  const users = await Promise.all([
+    // SYSADMIN user
+    prisma.user.upsert({
+      where: { username: 'admin' },
+      update: {},
+      create: {
+        name: 'Admin',
+        lastName: 'Sistema',
+        cedula: '1000000000',
+        phone: '+595981234567',
+        email: 'admin@s1mple-pos.com',
+        address: 'Asunción, Paraguay',
+        username: 'admin',
+        password: defaultPassword,
+        role: 'SYSADMIN',
+      },
+    }),
+    // ADMIN user
+    prisma.user.upsert({
+      where: { username: 'manager' },
+      update: {},
+      create: {
+        name: 'Manager',
+        lastName: 'Admin',
+        cedula: '2000000000',
+        phone: '+595982234567',
+        email: 'manager@s1mple-pos.com',
+        address: 'Asunción, Paraguay',
+        username: 'manager',
+        password: defaultPassword,
+        role: 'ADMIN',
+      },
+    }),
+    // USER (cajero)
+    prisma.user.upsert({
+      where: { username: 'cajero' },
+      update: {},
+      create: {
+        name: 'Cajero',
+        lastName: 'Usuario',
+        cedula: '3000000000',
+        phone: '+595983234567',
+        email: 'cajero@s1mple-pos.com',
+        address: 'Asunción, Paraguay',
+        username: 'cajero',
+        password: defaultPassword,
+        role: 'USER',
+      },
+    }),
+  ])
 
   // Create sample ingredients
-  const ingredients = await Promise.all([
+  const existingIngredients = await prisma.ingredient.findMany()
+  let ingredients = existingIngredients
+  
+  if (existingIngredients.length === 0) {
+    ingredients = await Promise.all([
     prisma.ingredient.create({
       data: {
         name: 'Masa para Pizza',

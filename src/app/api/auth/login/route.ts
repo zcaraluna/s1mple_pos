@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { login, createSession } from '@/lib/auth'
+import { login } from '@/lib/auth'
+import { encrypt } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,9 +22,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    await createSession(user)
+    // Create session token
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+    const session = await encrypt({ user, expires })
 
-    return NextResponse.json(user)
+    // Create response with cookie set in the response headers
+    const response = NextResponse.json(user)
+    
+    response.cookies.set('session', session, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      expires,
+      sameSite: 'lax',
+      path: '/',
+    })
+
+    return response
   } catch (error) {
     console.error('Login error:', error)
     return NextResponse.json(
